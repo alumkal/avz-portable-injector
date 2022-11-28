@@ -1,6 +1,5 @@
 #include "_process.h"
 #include <Windows.h>
-#pragma comment(lib, "user32.lib")
 #include <direct.h>
 #include <iostream>
 #include <stdio.h>
@@ -28,7 +27,7 @@ bool Process::OpenByWindow(const wchar_t* class_name, const wchar_t* window_name
     hwnd = FindWindowW(class_name, window_name);
 
     while (hwnd == nullptr) {
-        MessageBoxW(NULL, L"ÄúÊÇ·ñÎ´´ò¿ªÓÎÏ·£¿", L"Warning", MB_ICONWARNING);
+        MessageBoxW(NULL, L"æ‚¨æ˜¯å¦æœªæ‰“å¼€æ¸¸æˆï¼Ÿ", L"Warning", MB_ICONWARNING);
         hwnd = FindWindowW(class_name, window_name);
     }
 
@@ -38,14 +37,14 @@ bool Process::OpenByWindow(const wchar_t* class_name, const wchar_t* window_name
     }
 
     if (ReadMemory<uint32_t>(0x4140c5) != 0x0019b337) {
-        MessageBoxW(NULL, L"ÄúÊ¹ÓÃµÄÓÎÏ·°æ±¾²»ÊÇÓ¢ÎÄÔ­°æ£¬Çëµ½ÏÂÔØ°²×°°üµÄÁ´½ÓÏÂÔØ AvZ ËùÖ§³ÖµÄÓ¢ÎÄÔ­°æ", L"Error", MB_ICONERROR);
+        MessageBoxW(NULL, L"æ‚¨ä½¿ç”¨çš„æ¸¸æˆç‰ˆæœ¬ä¸æ˜¯è‹±æ–‡åŸç‰ˆï¼Œè¯·åˆ°ä¸‹è½½å®‰è£…åŒ…çš„é“¾æ¥ä¸‹è½½ AvZ æ‰€æ”¯æŒçš„è‹±æ–‡åŸç‰ˆ", L"Error", MB_ICONERROR);
         return false;
     }
 
     auto address = ReadMemory<uintptr_t>(0x6a9ec0);
     auto game_ui = ReadMemory<int>(address + 0x7fc);
     while (game_ui == 2 || game_ui == 3) {
-        MessageBoxW(NULL, L"¼ì²âµ½ÓÎÏ·´°¿ÚÔÚÑ¡¿¨»òÕ½¶·½çÃæ£¬ÕâÖÖĞĞÎª¿ÉÄÜ»áµ¼ÖÂ×¢ÈëÊ§°Ü£¬ÇëÔÚÓÎÏ·Ö÷½çÃæ½øĞĞ×¢Èë", L"Warning", MB_ICONWARNING);
+        MessageBoxW(NULL, L"æ£€æµ‹åˆ°æ¸¸æˆçª—å£åœ¨é€‰å¡æˆ–æˆ˜æ–—ç•Œé¢ï¼Œè¿™ç§è¡Œä¸ºå¯èƒ½ä¼šå¯¼è‡´æ³¨å…¥å¤±è´¥ï¼Œè¯·åœ¨æ¸¸æˆä¸»ç•Œé¢è¿›è¡Œæ³¨å…¥", L"Warning", MB_ICONWARNING);
         game_ui = ReadMemory<int>(address + 0x7fc);
     }
 
@@ -61,7 +60,7 @@ void Process::ManageDLL()
     dll_path = dll_path.substr(0, dll_path.size() - 4) + L".dll";
 
     if (!InjectDLL(dll_path.c_str())) {
-        MessageBoxW(NULL, L"DLL ×¢ÈëÊ§°Ü£¬Çë¼ì²é¸ÃĞĞÎªÊÇ·ñ±»É±¶¾Èí¼şÀ¹½Ø", L"Error", MB_ICONERROR);
+        MessageBoxW(NULL, L"DLL æ³¨å…¥å¤±è´¥ï¼Œè¯·æ£€æŸ¥è¯¥è¡Œä¸ºæ˜¯å¦è¢«æ€æ¯’è½¯ä»¶æ‹¦æˆª", L"Error", MB_ICONERROR);
     }
 }
 

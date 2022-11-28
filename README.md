@@ -12,11 +12,13 @@ AvZ 自带 injector 的修改版，使得无需 AvZ 套件便可向用户分发 
 
 3. 将这两个文件打包分发，直接运行 `.exe` 即可注入脚本
 
+`example/` 中有一个平均分布修改器的示例。
+
 ## 编译方法
 
-安装 MSVC C++ 套件，在本目录下 `cl *.cpp /O2`。
+`C:\path\to\avz2\MinGW\bin\clang++.exe -m32 -static -O2 src/*.cpp`。
 
-`bin` 目录下有预编译的二进制文件。
+`bin/` 下有预编译的二进制文件。
 
 ## 许可
 
