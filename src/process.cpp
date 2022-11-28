@@ -3,6 +3,7 @@
 #pragma comment(lib, "user32.lib")
 #include <direct.h>
 #include <iostream>
+#include <stdio.h>
 #include <string>
 
 Process::Process()
@@ -14,18 +15,20 @@ Process::Process()
 
 Process::~Process()
 {
-    if (IsValid())
+    if (IsValid()) {
         CloseHandle(handle);
+    }
 }
 
 bool Process::OpenByWindow(const wchar_t* class_name, const wchar_t* window_name)
 {
-    if (IsValid())
+    if (IsValid()) {
         CloseHandle(handle);
+    }
     hwnd = FindWindowW(class_name, window_name);
 
     while (hwnd == nullptr) {
-        MessageBoxW(NULL, L"您是否未打开游戏? (注意必须是英文原版，Steam 版也是不可以的！)", L"Warning", MB_ICONWARNING);
+        MessageBoxW(NULL, L"您是否未打开游戏？", L"Warning", MB_ICONWARNING);
         hwnd = FindWindowW(class_name, window_name);
     }
 
@@ -51,10 +54,10 @@ bool Process::OpenByWindow(const wchar_t* class_name, const wchar_t* window_name
 
 void Process::ManageDLL()
 {
-    wchar_t szBuf[512];
-    GetModuleFileNameW(NULL, szBuf, sizeof(szBuf));
+    wchar_t buf[512];
+    GetModuleFileNameW(NULL, buf, sizeof(buf));
 
-    std::wstring dll_path = szBuf;
+    std::wstring dll_path = buf;
     dll_path = dll_path.substr(0, dll_path.size() - 4) + L".dll";
 
     if (!InjectDLL(dll_path.c_str())) {
@@ -85,15 +88,15 @@ DWORD Process::InjectDLL(PCWSTR pszLibFile)
         return FALSE;
     }
 
-    // Get the real address of LoadLibraryW in Kernel32.dll
-    LPTHREAD_START_ROUTINE pfnThreadRtn = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
-    if (pfnThreadRtn == NULL) {
-        wprintf(L"[-] Error: Could not find LoadLibraryA function inside kernel32.dll library.\n");
-        return FALSE;
-    }
+    // // Get the real address of LoadLibraryW in Kernel32.dll
+    // LPTHREAD_START_ROUTINE pfnThreadRtn = (LPTHREAD_START_ROUTINE)GetProcAddress(GetModuleHandle(TEXT("Kernel32")), "LoadLibraryW");
+    // if (pfnThreadRtn == NULL) {
+    //     wprintf(L"[-] Error: Could not find LoadLibraryW function inside kernel32.dll library.\n");
+    //     return FALSE;
+    // }
 
     // Create a remote thread that calls LoadLibraryW(DLLPathname)
-    HANDLE hThread = CreateRemoteThread(handle, NULL, 0, pfnThreadRtn, pszLibFileRemote, 0, NULL);
+    HANDLE hThread = CreateRemoteThread(handle, NULL, 0, LPTHREAD_START_ROUTINE(LoadLibraryW), pszLibFileRemote, 0, NULL);
     if (hThread == NULL) {
         wprintf(L"[-] Error: Could not create the Remote Thread.\n");
         return FALSE;
@@ -103,11 +106,13 @@ DWORD Process::InjectDLL(PCWSTR pszLibFile)
     WaitForSingleObject(hThread, INFINITE);
 
     // Free the remote memory that contained the DLL's pathname and close Handles
-    if (pszLibFileRemote != NULL)
+    if (pszLibFileRemote != NULL) {
         VirtualFreeEx(handle, pszLibFileRemote, 0, MEM_RELEASE);
+    }
 
-    if (hThread != NULL)
+    if (hThread != NULL) {
         CloseHandle(hThread);
+    }
 
     return TRUE;
 }
@@ -119,9 +124,9 @@ void Process::Write(uintptr_t addr, size_t len, uint8_t* data)
 
 bool Process::IsValid()
 {
-    if (handle == nullptr)
+    if (handle == nullptr) {
         return false;
-
+    }
     DWORD exit_code;
     GetExitCodeProcess(handle, &exit_code);
     bool valid = (exit_code == STILL_ACTIVE);
