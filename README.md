@@ -1,28 +1,36 @@
 # 便携式 AvZ 注入器
 
-AvZ 自带 injector 的修改版，使得无需 AvZ 套件便可向用户分发 AvZ 脚本，可以为分发基于 AvZ 的辅助工具提供一定便利。
-
-该注入器会自动查找同一目录下同名的 `.dll` 文件，并注入到 PvZ 中。
+AvZ 自带 injector 的修改版，使得无需 AvZ 套件便可向用户分发 AvZ 脚本，可以为发布基于 AvZ 的辅助工具提供一定便利。
 
 ## 使用方法
 
-1. 以正常方式运行一次脚本，找到 `AsmVsZombies\bin\libavz_inject.dll` ，复制到某一目录下，重命名为 `[你的应用名].dll`
+注入器：
 
-2. 将本目录下的 `bin\injector.exe` 复制到与 1. 相同的目录下，重命名为 `[你的应用名].exe`
+有以下三种使用方式：
 
-3. 将这两个文件打包分发，直接运行 `.exe` 即可注入脚本
+- 在文件资源管理器内将 DLL 文件拖动到注入器 `.exe` 文件上
+- 设置 DLL 的打开方式为注入器（不推荐）
+- 直接运行注入器，在弹出的文件选择窗口中选择 DLL
 
-`example/` 中有一个平均分布修改器的示例。
+一键打包：
 
-## 编译方法
+运行该程序，选择待打包的 DLL，程序会在 DLL 所在目录自动生成同名 `.exe`。该 `.exe` 可以不依赖其他文件独立运行。
 
-`C:\path\to\avz2\MinGW\bin\clang++.exe -m32 -static -O2 src/*.cpp`。
+以上两个程序都支持以命令行形式传入文件名。
+
+注入完成后注入器会自动关闭，这并非错误。
+
+## 构建
+
+注入器：`clang++ -std=c++20 -m32 -O2 main.cpp -o injector.exe`
+
+一键打包：`clang++ -std=c++20 -O2 assets.res main.cpp -o 一键打包.exe`
 
 `bin/` 下有预编译的二进制文件。
 
 ## 许可
 
-Copyright © 2020-2022  vector-wlc, Reisen
+Copyright © 2022-2023 vector-wlc, Reisen
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

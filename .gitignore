@@ -1,1 +1,4 @@
-src/*.exe
+injector/*.dll
+injector/*.exe
+packer/*.dll
+packer/*.exe
